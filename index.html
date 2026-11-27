@@ -3,63 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sophie's Studio — a tiny game about a UX designer</title>
-  <meta name="description" content="Explore Sophie's 90s-style isometric studio to discover her UX work, process and story." />
+  <title>Sophie's Studio</title>
+  <meta name="description" content="Explore Sophie's cosy pixel studio to discover her UX work and story." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪴</text></svg>" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-mode="whimsy">
-  <main>
-    <!-- Game view -->
-    <section id="whimsy" aria-label="Interactive studio game">
-      <div class="window game-window">
-        <div class="titlebar">
-          <span>🪴 sophie_studio.exe</span>
-          <span class="tb-btns" aria-hidden="true"><i>_</i><i>□</i><i>×</i></span>
-        </div>
-        <div class="stage">
-          <canvas id="room" tabindex="0" aria-label="Isometric room. Click objects to learn about Sophie, or use arrow keys to walk and Enter to interact."></canvas>
-          <div id="tooltip" hidden></div>
-          <div id="bubble" hidden></div>
-        </div>
-        <div class="hud">
-          <div class="portrait" aria-hidden="true"><span></span></div>
-          <div class="who">
-            <strong id="hud-name"></strong>
-            <small id="hud-role"></small>
-          </div>
-          <div class="meters">
-            <label>Coffee <span class="bar"><i id="m-coffee" class="c1"></i></span></label>
-            <label>Curiosity <span class="bar"><i id="m-curious" class="c2"></i></span></label>
-            <label>Fun <span class="bar"><i id="m-fun" class="c3"></i></span></label>
-          </div>
-          <div class="found">
-            <span>Discovered</span>
-            <strong id="found">0/12</strong>
-          </div>
-        </div>
-      </div>
-      <p class="hint">Click objects with a <b>!</b> to explore · Arrow keys to walk · Enter to interact</p>
-    </section>
-
-    <!-- Plain view -->
-    <section id="boring" hidden>
-      <div class="boring-wrap">
-        <h1>Sophie <small>UX Designer · Toronto</small></h1>
-        <div id="boring-content"></div>
-      </div>
-    </section>
+  <main id="whimsy">
+    <div class="stage">
+      <canvas id="room" tabindex="0" aria-label="Sophie's studio. Click objects to learn about Sophie, or use arrow keys to walk and Enter to interact."></canvas>
+      <div id="tooltip" hidden></div>
+      <div id="bubble" hidden></div>
+    </div>
   </main>
 
-  <!-- Dialog window -->
+  <section id="boring" hidden>
+    <div class="boring-wrap">
+      <h1>Sophie <small>UX Designer · Toronto</small></h1>
+      <div id="boring-content"></div>
+    </div>
+  </section>
+
   <div id="dialog" hidden>
-    <div class="window dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
-      <div class="titlebar">
-        <span id="dlg-title"></span>
-        <button id="dlg-close" class="x" aria-label="Close">×</button>
-      </div>
-      <div id="dlg-body" class="dlg-body"></div>
-      <div class="dlg-foot"><button id="dlg-ok" class="btn">OK</button></div>
+    <div class="card" role="dialog" aria-modal="true">
+      <button id="dlg-close" class="x" aria-label="Close">×</button>
+      <div id="dlg-body"></div>
     </div>
   </div>
 

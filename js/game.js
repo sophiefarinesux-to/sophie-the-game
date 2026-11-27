@@ -8,13 +8,13 @@
   // ── Canvas & isometric projection ────────────────────────────
   const canvas = document.getElementById("room");
   const ctx = canvas.getContext("2d");
-  const W = 480, H = 290;
+  const W = 344, H = 246;
   canvas.width = W;
   canvas.height = H;
 
   const N = 10;            // room is N × N tiles
   const TW = 16, TH = 8;   // half tile width / height in pixels
-  const OX = 240, OY = 92; // screen position of the back corner (0,0)
+  const OX = 168, OY = 78; // screen position of the back corner (0,0)
   const WALL = 66;         // wall height
 
   const iso = (x, y, z = 0) => [OX + (x - y) * TW, OY + (x + y) * TH - z];
@@ -40,7 +40,7 @@
   // Solid box: visible faces are top, front-left (y+d) and front-right (x+w)
   function box(x, y, w, d, h, z, color) {
     const top = shade(color, 0.1), left = color, right = shade(color, -0.12);
-    const edge = shade(color, -0.3);
+    const edge = "rgba(96,58,42,.9)"; // warm sticker outline
     poly([iso(x, y + d, z), iso(x + w, y + d, z), iso(x + w, y + d, z + h), iso(x, y + d, z + h)], left, edge);
     poly([iso(x + w, y, z), iso(x + w, y + d, z), iso(x + w, y + d, z + h), iso(x + w, y, z + h)], right, edge);
     poly([iso(x, y, z + h), iso(x + w, y, z + h), iso(x + w, y + d, z + h), iso(x, y + d, z + h)], top, edge);
@@ -54,48 +54,118 @@
   const rect = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
 
   // ── Room shell ───────────────────────────────────────────────
-  function drawRoom() {
-    // floor
+  const WOOD = ["#c98d5a", "#bf8452", "#d29763"];
+  function drawRoom(t) {
+    // green checker tiles
     for (let x = 0; x < N; x++)
       for (let y = 0; y < N; y++)
-        poly([iso(x, y), iso(x + 1, y), iso(x + 1, y + 1), iso(x, y + 1)],
-          (x + y) % 2 ? "#e3cfa6" : "#d9c294", "#cbb283");
-
-    // walls + wallpaper stripes
-    quadX(0, 0, N, 0, WALL, "#8fcfc0");
-    quadY(0, 0, N, 0, WALL, "#a9dccf");
+        poly([iso(x, y), iso(x + 1, y), iso(x + 1, y + 1), iso(x, y + 1)], (x + y) % 2 ? "#3f8a68" : "#4d9a76", "#2f6f52");
+    // walls + soft stripes
+    quadX(0, 0, N, 0, WALL, "#f7d7bd");
+    quadY(0, 0, N, 0, WALL, "#fce6d0");
     for (let i = 0.5; i < N; i += 0.5) {
-      quadX(0, i, i + 0.06, 4, WALL, "rgba(255,255,255,.18)");
-      quadY(0, i, i + 0.06, 4, WALL, "rgba(255,255,255,.22)");
+      quadX(0, i, i + 0.05, 4, WALL, "rgba(255,255,255,.22)");
+      quadY(0, i, i + 0.05, 4, WALL, "rgba(255,255,255,.28)");
     }
-    // baseboards
-    quadX(0, 0, N, 0, 4, "#5e9c8f");
-    quadY(0, 0, N, 0, 4, "#6fae9f");
-    // wall caps
-    poly([iso(0, N, WALL), iso(0, 0, WALL), iso(N, 0, WALL), iso(N, -0.25, WALL), iso(-0.25, -0.25, WALL), iso(-0.25, N, WALL)], "#4c7f75");
+    quadX(0, 0, N, 0, 4, "#e6b28c");
+    quadY(0, 0, N, 0, 4, "#efbf99");
+    poly([iso(0, N, WALL), iso(0, 0, WALL), iso(N, 0, WALL), iso(N, -0.25, WALL), iso(-0.25, -0.25, WALL), iso(-0.25, N, WALL)], "#e0a983", "rgba(96,58,42,.9)");
 
-    // window on the left wall, with a little Toronto skyline
-    quadX(0.01, 1, 2.6, 22, 56, "#ffffff");
-    quadX(0.02, 1.1, 2.5, 24, 54, "#9fd8f5");
-    quadX(0.03, 1.1, 2.5, 24, 36, "#c3e8fa");
-    quadX(0.03, 2.25, 2.4, 47, 50, "#ffe27a");            // sun
-    quadX(0.04, 1.12, 1.4, 24, 33, "#6a7aa0");
-    quadX(0.04, 1.4, 1.65, 24, 37, "#58688f");
-    quadX(0.04, 1.78, 1.84, 24, 50, "#4b5a80");          // CN Tower shaft
-    quadX(0.05, 1.73, 1.89, 40, 43, "#4b5a80");          // pod
-    quadX(0.04, 1.95, 2.2, 24, 35, "#6a7aa0");
-    quadX(0.04, 2.2, 2.48, 24, 31, "#58688f");
-    quadX(0.06, 1.1, 2.5, 38.5, 39.5, "#ffffff");         // mullion
+    // big window above the desk, with the CN Tower at golden hour
+    // (drawn on the back wall; `wq` maps window coords onto it)
+    const Z = (z) => 30 + (z - 14) * 0.7, DX = 0.25;
+    const wq = (off, a, b, z0, z1, c) => quadY(off, a + DX, b + DX, Z(z0), Z(z1), c);
+    const [, gTop] = iso(1.7, 0, Z(58)), [, gBot] = iso(1.7, 0, Z(18));
+    const sky = ctx.createLinearGradient(0, gTop, 0, gBot);
+    sky.addColorStop(0, "#6c5ba8"); sky.addColorStop(0.45, "#e98a8a"); sky.addColorStop(1, "#ffcf8a");
+    wq(0.01, 0.55, 2.45, 16, 60, "#fffaf0");
+    wq(0.02, 0.65, 2.35, 18, 58, sky);
+    wq(0.03, 2.0, 2.15, 45, 48, "#fff1b8");                          // sun
+    const city = "#3d3360";
+    wq(0.04, 0.65, 0.95, 18, 28, city);
+    wq(0.04, 0.95, 1.2, 18, 33, city);
+    wq(0.04, 1.2, 1.45, 18, 26, city);
+    wq(0.04, 1.75, 2.0, 18, 30, city);
+    wq(0.04, 2.0, 2.35, 18, 24, city);
+    wq(0.04, 1.47, 1.53, 18, 52, city);                              // CN Tower shaft
+    wq(0.04, 1.4, 1.6, 39, 43, city);                                // main pod
+    wq(0.04, 1.44, 1.56, 47, 49, city);                              // sky pod
+    wq(0.04, 1.495, 1.505, 52, 57, city);                            // antenna
+    for (const [y, z] of [[0.75, 24], [0.85, 21], [1.05, 29], [1.1, 25], [1.3, 22], [1.85, 26], [1.9, 22], [2.1, 21], [2.25, 20]])
+      wq(0.05, y, y + 0.03, z, z + 1.4, Math.sin(t * 0.7 + y * 9) > -0.6 ? "#ffd982" : city);
+    wq(0.06, 1.48, 1.52, 41, 42.4, Math.sin(t * 3) > 0 ? "#ff5a5a" : city); // tower light
+    wq(0.05, 0.65, 2.35, 37.5, 38.6, "#fffaf0");                     // mullions
+    wq(0.05, 1.49, 1.51, 18, 58, "#fffaf0");
+    // curtains + rod
+    wq(0.07, 0.4, 0.75, 14, 61, "#f2c14e");
+    wq(0.08, 0.5, 0.56, 14, 61, "#dba734");
+    wq(0.07, 2.25, 2.6, 14, 61, "#f2c14e");
+    wq(0.08, 2.4, 2.46, 14, 61, "#dba734");
+    wq(0.09, 0.3, 2.7, 61, 63, "#6b4a2e");
+
+    // round mirror + little plant shelf on the left wall
+    const ring = (cy, cz, r, fill) => {
+      const pts = [];
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 10) pts.push(iso(0.02, cy + Math.cos(a) * r, cz + Math.sin(a) * r * 16));
+      poly(pts, fill, "rgba(96,58,42,.9)");
+    };
+    ring(1.0, 44, 0.5, "#f2c14e");
+    ring(1.0, 44, 0.38, "#cfe9ef");
+    quadX(0.03, 0.8, 0.9, 46, 52, "rgba(255,255,255,.7)");
+    box(0, 1.65, 0.35, 0.9, 1.5, 32, "#d9a36b");                     // shelf
+    box(0.08, 1.75, 0.2, 0.2, 4, 33.5, "#e8875f");
+    box(0.04, 1.71, 0.28, 0.28, 4, 37.5, "#5fae6e");
+    box(0.08, 2.15, 0.2, 0.2, 5, 33.5, "#f6efe2");
+    box(0.05, 2.12, 0.26, 0.26, 3, 38.5, "#7cc576");
 
     // clock on the right wall
-    quadY(0.01, 3.55, 3.95, 44, 54, "#ffffff", "#555");
+    quadY(0.01, 3.55, 3.95, 44, 54, "#ffffff", "#6b4a2e");
     quadY(0.02, 3.73, 3.77, 49, 53, "#333");
     quadY(0.02, 3.75, 3.88, 48.5, 49.5, "#333");
 
-    // rug
-    poly([iso(3, 3.2, 0.5), iso(7, 3.2, 0.5), iso(7, 7.2, 0.5), iso(3, 7.2, 0.5)], "#d84a6b");
-    poly([iso(3.3, 3.5, 0.6), iso(6.7, 3.5, 0.6), iso(6.7, 6.9, 0.6), iso(3.3, 6.9, 0.6)], null, "#ffd1dc");
-    poly([iso(4.4, 4.6, 0.6), iso(5.6, 4.6, 0.6), iso(5.6, 5.8, 0.6), iso(4.4, 5.8, 0.6)], "#ffca28");
+    // cosy rug under the lounge corner
+    poly([iso(0.9, 5.5, 0.4), iso(3.9, 5.5, 0.4), iso(3.9, 8.8, 0.4), iso(0.9, 8.8, 0.4)], "#f6b9bf", "rgba(96,58,42,.6)");
+    poly([iso(1.1, 5.7, 0.5), iso(3.7, 5.7, 0.5), iso(3.7, 8.6, 0.5), iso(1.1, 8.6, 0.5)], null, "#fff3ea");
+    for (let y = 5.9; y < 8.5; y += 0.45) poly([iso(1.2, y, 0.5), iso(3.6, y, 0.5), iso(3.6, y + 0.08, 0.5), iso(1.2, y + 0.08, 0.5)], "#f3a3ac");
+  }
+
+  // string lights along the top of both walls
+  const BULBS = ["#ffd166", "#ff9f6e", "#fff1b8", "#ffb4c2"];
+  function drawLights(t) {
+    ctx.strokeStyle = "#5a3d28"; ctx.lineWidth = 1;
+    const pts = [];
+    for (let y = 9.8; y > 0; y -= 0.25) pts.push([0.02, y]);
+    for (let x = 0; x < 9.8; x += 0.25) pts.push([x, 0.02]);
+    ctx.beginPath();
+    pts.forEach(([x, y], i) => {
+      const sag = Math.abs(Math.sin(((x + y) / 1.2) * Math.PI)) * 4;
+      const [sx, sy] = iso(x, y, WALL - 3 - sag);
+      i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
+    });
+    ctx.stroke();
+    pts.forEach(([x, y], i) => {
+      if (i % 3) return;
+      const sag = Math.abs(Math.sin(((x + y) / 1.2) * Math.PI)) * 4;
+      const [sx, sy] = iso(x, y, WALL - 3 - sag);
+      const on = 0.65 + 0.35 * Math.sin(t * 2 + i);
+      ctx.globalAlpha = on * 0.35;
+      ctx.fillStyle = BULBS[(i / 3) % 4];
+      ctx.beginPath(); ctx.arc(sx, sy + 2, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+      rect(Math.round(sx) - 1, Math.round(sy) + 1, 2, 2, BULBS[(i / 3) % 4]);
+    });
+  }
+
+  // warm light pools (lamp + candle)
+  function drawGlow(t) {
+    const glow = (x, y, z, r, a) => {
+      const [sx, sy] = iso(x, y, z);
+      const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, r);
+      g.addColorStop(0, `rgba(255,196,120,${a})`); g.addColorStop(1, "rgba(255,196,120,0)");
+      ctx.fillStyle = g; ctx.fillRect(sx - r, sy - r, r * 2, r * 2);
+    };
+    glow(1.2, 5.6, 20, 46, 0.22 + Math.sin(t * 1.3) * 0.02);
+    glow(1.95, 7.2, 12, 22, 0.32 + Math.sin(t * 9) * 0.05);
   }
 
   // ── Furniture ────────────────────────────────────────────────
@@ -105,9 +175,9 @@
     {
       id: "desk", x: 1, y: 0.05, w: 2.4, d: 0.95, h: 32, z: 0, stand: [2, 1],
       draw() {
-        box(1.05, 0.85, 0.12, 0.12, 14, 0, "#7a5230");
-        box(3.28, 0.85, 0.12, 0.12, 14, 0, "#7a5230");
-        box(1, 0.05, 2.4, 0.95, 3, 14, "#b07a4a");
+        box(1.05, 0.85, 0.12, 0.12, 14, 0, "#b07d4f");
+        box(3.28, 0.85, 0.12, 0.12, 14, 0, "#b07d4f");
+        box(1, 0.05, 2.4, 0.95, 3, 14, "#d9a36b");
         box(1.6, 0.25, 0.95, 0.07, 15, 17.5, "#9aa1ab");              // laptop lid
         quadY(0.321, 1.67, 2.48, 19.5, 31, "#22313a");
         quadY(0.322, 1.71, 2.44, 20.5, 30, "#3ad1c4");
@@ -148,10 +218,10 @@
     {
       id: "coffee", x: 7.6, y: 0.05, w: 2.35, d: 0.9, h: 36, z: 0, stand: [8, 1],
       draw() {
-        box(7.6, 0.05, 2.35, 0.9, 18, 0, "#e9e4da");
+        box(7.6, 0.05, 2.35, 0.9, 18, 0, "#fff6ec");
         quadY(0.951, 7.8, 8.7, 3, 15, "#d6cfc1");
         quadY(0.951, 8.85, 9.75, 3, 15, "#d6cfc1");
-        box(7.6, 0.05, 2.35, 0.9, 2, 18, "#6d6a75");                   // counter top
+        box(7.6, 0.05, 2.35, 0.9, 2, 18, "#d9a36b");                   // counter top
         box(8.55, 0.15, 0.6, 0.45, 15, 20, "#333a40");                 // machine
         quadY(0.601, 8.65, 8.75, 31, 32, "#ff5252");
         box(8.72, 0.62, 0.18, 0.14, 4, 20, "#ffffff");                 // cup
@@ -161,10 +231,10 @@
     {
       id: "shelf", x: 0.05, y: 2.6, w: 0.75, d: 1.8, h: 64, z: 0, stand: [1, 3],
       draw() {
-        box(0.05, 2.6, 0.75, 1.8, 64, 0, "#8b5a3c");
+        box(0.05, 2.6, 0.75, 1.8, 64, 0, "#5f6f9e");
         const books = ["#e85d75", "#3ad1c4", "#ffca28", "#7e57c2", "#f4f1e8", "#4caf50", "#ff8a65", "#5c6bc0"];
         [5, 20, 35, 50].forEach((z, row) => {
-          quadX(0.801, 2.7, 4.3, z, z + 12, "#4e3020");
+          quadX(0.801, 2.7, 4.3, z, z + 12, "#3f4b73");
           let y = 2.73, i = row * 3;
           while (y < 4.15) {
             const bw = 0.1 + ((i * 7) % 3) * 0.03, bh = 8 + ((i * 5) % 4);
@@ -175,40 +245,43 @@
       },
     },
     {
-      id: "couch", x: 0.05, y: 5.85, w: 0.95, d: 2.9, h: 22, z: 0, stand: [1, 7],
+      id: "couch", x: 0.05, y: 5.85, w: 0.95, d: 2.9, h: 22, z: 0, stand: [1, 8],
       draw() {
-        box(0.05, 6, 0.3, 2.6, 20, 0, "#6a48b0");
-        box(0.1, 5.85, 0.85, 0.3, 13, 0, "#6a48b0");
-        box(0.1, 6.1, 0.85, 2.4, 9, 0, "#8562cc");
+        box(0.05, 6, 0.3, 2.6, 20, 0, "#ec98a4");
+        box(0.1, 5.85, 0.85, 0.3, 13, 0, "#ec98a4");
+        box(0.1, 6.1, 0.85, 2.4, 9, 0, "#f5adb7");
         box(0.35, 6.35, 0.25, 0.55, 7, 9, "#ffca28");                  // cushion
-        box(0.35, 7.7, 0.25, 0.55, 7, 9, "#3ad1c4");
-        box(0.1, 8.45, 0.85, 0.3, 13, 0, "#6a48b0");
+        box(0.35, 7.7, 0.25, 0.55, 7, 9, "#8fc9b0");
+        box(0.15, 7.0, 0.8, 0.55, 1.5, 9, "#f6efe2");                   // knit blanket
+        box(0.15, 7.15, 0.8, 0.08, 1.6, 9, "#f2c14e");
+        box(0.15, 7.35, 0.8, 0.08, 1.6, 9, "#f2c14e");
+        box(0.1, 8.45, 0.85, 0.3, 13, 0, "#ec98a4");
       },
     },
     {
       id: "phone", x: 0.1, y: 9.1, w: 0.8, d: 0.8, h: 22, z: 0, stand: [1, 9],
       draw() {
-        box(0.1, 9.1, 0.8, 0.8, 14, 0, "#a1887f");
+        box(0.1, 9.1, 0.8, 0.8, 14, 0, "#f2c14e");
         box(0.28, 9.3, 0.45, 0.4, 4, 14, "#e53935");
         box(0.25, 9.32, 0.5, 0.13, 2.5, 18, "#b71c1c");
       },
     },
     {
       // framed photo of Sophie between the bookshelf and the map
-      id: "photo", x: 0, y: 4.7, w: 0.1, d: 0.95, h: 24, z: 30, stand: [1, 5], wall: true,
+      id: "photo", x: 0, y: 4.7, w: 0.1, d: 0.95, h: 20, z: 37, stand: [1, 5], wall: true,
       draw() {
-        quadX(0.02, 4.7, 5.65, 30, 54, "#8b5a3c");
-        quadX(0.03, 4.78, 5.57, 32, 52, "#ffe9c9");
-        quadX(0.04, 4.95, 5.4, 32, 37, "#e85d75");                     // shirt
-        quadX(0.04, 5.0, 5.35, 37, 48, "#5a321c");                     // hair
-        quadX(0.05, 5.07, 5.28, 38, 45, "#f0c19d");                    // face
-        quadX(0.06, 5.11, 5.14, 42, 43, "#222");
-        quadX(0.06, 5.2, 5.23, 42, 43, "#222");
+        quadX(0.02, 4.7, 5.65, 37, 57, "#8b5a3c");
+        quadX(0.03, 4.78, 5.57, 39, 55, "#ffe9c9");
+        quadX(0.04, 4.95, 5.4, 39, 43, "#e85d75");
+        quadX(0.04, 5.0, 5.35, 43, 52, "#5a321c");
+        quadX(0.05, 5.07, 5.28, 44, 50, "#f0c19d");
+        quadX(0.06, 5.11, 5.14, 47, 48, "#222");
+        quadX(0.06, 5.2, 5.23, 47, 48, "#222");
       },
     },
     {
       // map poster: Toronto, France, Tallinn
-      id: "map", x: 0, y: 6.1, w: 0.1, d: 2.2, h: 30, z: 26, stand: [1, 8], wall: true,
+      id: "map", x: 0, y: 6.1, w: 0.1, d: 2.2, h: 30, z: 26, stand: [2, 8], wall: true,
       draw() {
         quadX(0.01, 6.1, 8.3, 26, 56, "#fffdf6", "#c9c2ad");
         quadX(0.02, 6.2, 8.2, 28, 54, "#7ec8e3");
@@ -225,22 +298,55 @@
       },
     },
     {
-      // coffee table on the rug with a Bernard Werber book
-      id: "book", x: 3.1, y: 5.1, w: 0.8, d: 0.8, h: 14, z: 0, stand: [4, 5],
+      // coffee table in front of the couch: book, candle, mug
+      id: "book", x: 1.3, y: 6.35, w: 0.9, d: 1.2, h: 16, z: 0, stand: [3, 7],
       draw() {
-        box(3.2, 5.2, 0.6, 0.6, 8, 0, "#7a5230");
-        box(3.1, 5.1, 0.8, 0.8, 2, 8, "#b07a4a");
-        box(3.27, 5.25, 0.45, 0.35, 2, 10, "#fffdf6");                  // pages
-        box(3.25, 5.23, 0.49, 0.39, 0.8, 10, "#2e5fa8");                // cover
-        box(3.25, 5.4, 0.49, 0.05, 2.4, 10, "#1f4580");                 // spine
+        box(1.35, 6.4, 0.1, 0.1, 6, 0, "#6b4a2e");
+        box(2.05, 7.4, 0.1, 0.1, 6, 0, "#6b4a2e");
+        box(2.05, 6.4, 0.1, 0.1, 6, 0, "#6b4a2e");
+        box(1.35, 7.4, 0.1, 0.1, 6, 0, "#6b4a2e");
+        box(1.3, 6.35, 0.9, 1.2, 2, 6, "#d9a36b");
+        box(1.42, 6.5, 0.42, 0.55, 2, 8, "#fffdf6");                    // book pages
+        box(1.4, 6.48, 0.46, 0.59, 0.8, 8, "#2e5fa8");                  // cover
+        box(1.4, 6.75, 0.46, 0.05, 2.4, 8, "#1f4580");                  // spine
+        box(1.85, 7.12, 0.16, 0.16, 4, 8, "#f6efe2");                   // candle
+        const fl = Math.round(Math.sin(performance.now() / 90));
+        const [fx, fy] = iso(1.93, 7.2, 13);
+        rect(Math.round(fx), Math.round(fy) + fl, 1, 2, "#ffcf5a");
+        box(1.5, 7.2, 0.15, 0.15, 3.5, 8, "#e85d75");                   // mug
+      },
+    },
+    {
+      id: "lamp", deco: true, x: 0.15, y: 4.95, w: 0.45, d: 0.45, h: 35, z: 0,
+      draw() {
+        box(0.2, 5.0, 0.35, 0.35, 1.5, 0, "#4a3426");
+        box(0.34, 5.14, 0.07, 0.07, 26, 1.5, "#4a3426");
+        box(0.1, 4.9, 0.55, 0.55, 8, 27, "#ffe2a8");                    // shade
+      },
+    },
+    {
+      id: "armchair", deco: true, x: 3.15, y: 8.25, w: 0.8, d: 0.8, h: 16, z: 0,
+      draw() {
+        box(3.2, 8.3, 0.25, 0.7, 16, 0, "#6fae84");                    // back
+        box(3.2, 8.25, 0.75, 0.15, 11, 0, "#5f9d74");
+        box(3.3, 8.4, 0.65, 0.5, 7, 0, "#7fbf94");                     // seat
+        box(3.2, 8.9, 0.75, 0.15, 11, 0, "#5f9d74");
+        box(3.45, 8.5, 0.3, 0.3, 3, 7, "#f2c14e");                     // cushion
+      },
+    },
+    {
+      id: "pouf", deco: true, x: 5.25, y: 3.3, w: 0.75, d: 0.75, h: 9, z: 0,
+      draw() {
+        box(5.25, 3.3, 0.75, 0.75, 8, 0, "#f5adb7");
+        box(5.35, 3.4, 0.55, 0.55, 1.5, 8, "#f8c3ca");
       },
     },
     {
       // guestbook on a little stand
       id: "guestbook", x: 9.15, y: 6.15, w: 0.7, d: 0.7, h: 22, z: 0, stand: [8, 6],
       draw() {
-        box(9.3, 6.3, 0.4, 0.4, 14, 0, "#8b5a3c");
-        box(9.15, 6.15, 0.7, 0.7, 2, 14, "#6d4a2e");
+        box(9.3, 6.3, 0.4, 0.4, 14, 0, "#d9a36b");
+        box(9.15, 6.15, 0.7, 0.7, 2, 14, "#c48d57");
         box(9.22, 6.22, 0.56, 0.5, 1.5, 16, "#fffdf6");
         box(9.22, 6.46, 0.56, 0.03, 1.8, 16, "#c9c2ad");
         box(9.62, 6.3, 0.04, 0.04, 7, 17.5, "#ffffff");                 // quill
@@ -248,6 +354,7 @@
     },
   ];
   const ITEM = Object.fromEntries(ITEMS.map((it) => [it.id, it]));
+  const CLICKABLE = ITEMS.filter((it) => !it.deco);
 
   // tiles blocked by furniture
   const blocked = new Set();
@@ -432,16 +539,10 @@
 
   // ── Game state: meters & discoveries ─────────────────────────
   const found = new Set();
-  let coffee = 70;
   const $ = (s) => document.querySelector(s);
-  const total = ITEMS.length + 1; // + Patapouf
+  const total = CLICKABLE.length + 1; // + Patapouf
 
-  function updateHud() {
-    $("#m-coffee").style.width = coffee + "%";
-    $("#m-curious").style.width = (found.size / total) * 100 + "%";
-    $("#m-fun").style.width = Math.min(100, 30 + found.size * 10) + "%";
-    $("#found").textContent = `${found.size}/${total}`;
-  }
+  function updateHud() {}
 
   // ── UI: speech bubble, tooltip, dialog ───────────────────────
   let bubbleTimer;
@@ -467,8 +568,8 @@
     if (L.linkedin) rows.push(`<a class="btn" href="${L.linkedin}" target="_blank" rel="noopener">💼 LinkedIn</a>`);
     if (L.cv) rows.push(`<a class="btn" href="${L.cv}" target="_blank" rel="noopener">📄 My CV</a>`);
     rows.push(`<a class="btn" href="${L.github}" target="_blank" rel="noopener">🐙 GitHub</a>`);
-    const missing = !L.email || !L.linkedin ? `<p><mark class="todo">Add your email, LinkedIn and CV in js/content.js → links.</mark></p>` : "";
-    return `<p>Ring ring! I'd love to hear from you.</p><div class="btn-row">${rows.join("")}</div>${missing}`;
+    const missing = !L.email || !L.linkedin ? `<p><mark class="todo">email + LinkedIn</mark></p>` : "";
+    return `<div class="btn-row">${rows.join("")}</div>${missing}`;
   }
   // little SVG map of the North Atlantic with a pin per place
   function mapHtml() {
@@ -487,22 +588,19 @@
           <circle cy="-11" r="2.5" fill="#fff"/>
           <text y="12" text-anchor="middle" class="pin-label">${p.name}</text></g>`).join("")}
     </svg>`;
-    const list = C.places.map((p) => `<li><strong>${p.flag} ${p.name}</strong>, ${p.country}<br><span>${p.note}</span></li>`).join("");
-    return `<p>${C.placesIntro}</p>${svg}<ul class="places">${list}</ul>`;
+    return `${svg}<p class="lead">${C.placesIntro}</p>`;
   }
 
   function guestbookHtml() {
-    return `<p>${C.items.guestbook.intro}</p>
+    return `<p class="lead">${C.items.guestbook.intro}</p>
       <form class="gb" novalidate>
-        <fieldset class="moods"><legend>First impression</legend>
-          ${["😍 Love it", "🙂 Nice", "🤔 Interesting", "💡 I have ideas"].map((m, i) =>
-            `<label><input type="radio" name="mood" value="${m}"${i === 0 ? "" : ""}><span>${m}</span></label>`).join("")}
+        <fieldset class="moods"><legend class="sr">First impression</legend>
+          ${["😍", "🙂", "🤔", "💡"].map((m) =>
+            `<label><input type="radio" name="mood" value="${m}"><span>${m}</span></label>`).join("")}
         </fieldset>
-        <label class="field">Your feedback
-          <textarea name="message" rows="4" maxlength="1500" placeholder="A few words about my portfolio…" required></textarea></label>
-        <label class="field">Your name <small>(optional)</small>
-          <input name="name" maxlength="80" autocomplete="name"></label>
-        <div class="gb-foot"><button class="btn" type="submit">✍️ Sign the guestbook</button><span class="gb-status" role="status"></span></div>
+        <textarea name="message" rows="3" maxlength="1500" aria-label="Your feedback" placeholder="A few words…" required></textarea>
+        <input name="name" maxlength="80" autocomplete="name" aria-label="Your name (optional)" placeholder="Name (optional)">
+        <div class="gb-foot"><button class="btn" type="submit">Send</button><span class="gb-status" role="status"></span></div>
       </form>`;
   }
 
@@ -512,7 +610,7 @@
     const message = String(fd.get("message") || "").trim();
     const name = String(fd.get("name") || "").trim() || "Anonymous";
     const mood = String(fd.get("mood") || "");
-    if (!message) { status.textContent = "Write a few words first 🙂"; form.message.focus(); return; }
+    if (!message) { status.textContent = "A few words first 🙂"; form.message.focus(); return; }
     const F = C.feedback || {};
     if (F.formspree) {
       status.textContent = "Sending…";
@@ -524,7 +622,7 @@
         });
         if (!r.ok) throw new Error(r.status);
         form.reset();
-        status.textContent = "Thank you! Sophie will read it 💌";
+        status.textContent = "Thank you 💌";
       } catch {
         status.textContent = "Oops, that didn't send. Please try again.";
       }
@@ -533,7 +631,7 @@
       location.href = `mailto:${C.links.email}?subject=${encodeURIComponent("Feedback on your portfolio")}&body=${encodeURIComponent(body)}`;
       status.textContent = "Opening your email app…";
     } else {
-      status.innerHTML = '<mark class="todo">Guestbook not connected yet: add a Formspree URL or your email in content.js.</mark>';
+      status.innerHTML = '<mark class="todo">not connected yet</mark>';
     }
   }
   function bindForms(root) {
@@ -549,10 +647,8 @@
     const data = C.items[id];
     const first = !found.has(id);
     found.add(id);
-    if (id === "coffee") coffee = 100;
-    updateHud();
     lastFocus = document.activeElement;
-    $("#dlg-title").textContent = data.title;
+    $("#dialog .card").setAttribute("aria-label", data.title);
     $("#dlg-body").innerHTML = bodyFor(id);
     bindForms($("#dlg-body"));
     $("#bubble").hidden = true;
@@ -567,7 +663,6 @@
     if (lastFocus) lastFocus.focus();
   }
   $("#dlg-close").addEventListener("click", closeDialog);
-  $("#dlg-ok").addEventListener("click", closeDialog);
   $("#dialog").addEventListener("click", (e) => { if (e.target.id === "dialog") closeDialog(); });
 
   // ── Input ────────────────────────────────────────────────────
@@ -578,7 +673,7 @@
   }
   function itemAt(px, py) {
     const area = (b) => (b[2] - b[0]) * (b[3] - b[1]);
-    const hits = [cat, ...ITEMS].filter((it) => { const b = it.bb; return px >= b[0] && px <= b[2] && py >= b[1] && py <= b[3]; });
+    const hits = [cat, ...CLICKABLE].filter((it) => { const b = it.bb; return px >= b[0] && px <= b[2] && py >= b[1] && py <= b[3]; });
     hits.sort((a, b) => area(a.bb) - area(b.bb)); // smallest (most specific) wins
     return hits[0] || null;
   }
@@ -588,7 +683,7 @@
     const tip = $("#tooltip");
     if (hover) {
       const r = canvas.getBoundingClientRect(), s = r.width / W;
-      tip.textContent = C.items[hover.id].label + (found.has(hover.id) ? "" : "  ✨");
+      tip.textContent = C.items[hover.id].label;
       tip.style.left = ((hover.bb[0] + hover.bb[2]) / 2) * s + "px";
       tip.style.top = hover.bb[1] * s - 8 + "px";
       tip.hidden = false;
@@ -621,14 +716,14 @@
       if (e.target.closest("button, a, input, textarea")) return;
       const mx = Math.round(me.x), my = Math.round(me.y);
       if (Math.abs(mx - Math.round(cat.x)) + Math.abs(my - Math.round(cat.y)) <= 1) { e.preventDefault(); return walkToCat(); }
-      const it = ITEMS.find((i) => i.stand[0] === mx && i.stand[1] === my);
+      const it = CLICKABLE.find((i) => i.stand[0] === mx && i.stand[1] === my);
       if (it) { e.preventDefault(); me.target = it; arrive(); }
     }
   });
 
   // ── Main loop ────────────────────────────────────────────────
   const SPEED = 4.5; // tiles per second
-  let last = performance.now(), coffeeWarned = false;
+  let last = performance.now();
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
@@ -649,15 +744,10 @@
 
     updateCat(dt);
 
-    // coffee slowly runs out
-    coffee = Math.max(0, coffee - dt * 0.8);
-    if (coffee < 15 && !coffeeWarned) { coffeeWarned = true; say("Running low on coffee… ☕ (hint: the coffee machine!)"); }
-    if (coffee > 50) coffeeWarned = false;
-    $("#m-coffee").style.width = coffee + "%";
-
     // draw
     ctx.clearRect(0, 0, W, H);
-    drawRoom();
+    drawRoom(t);
+    drawLights(t);
     const drawables = [...ITEMS.map((it) => ({ key: it.key, it })), { key: me.x + me.y + 1, me: true }, { key: cat.key, cat: true }];
     drawables.sort((a, b) => a.key - b.key);
     for (const d of drawables) {
@@ -668,15 +758,17 @@
       d.it.draw();
       ctx.filter = "none";
     }
-    // "!" markers above undiscovered objects
-    for (const it of [...ITEMS, cat]) {
+    // tiny twinkling sparkles above undiscovered objects
+    for (const it of [...CLICKABLE, cat]) {
       if (found.has(it.id)) continue;
-      const bb = it.bb;
-      const cx = Math.round((bb[0] + bb[2]) / 2), cy = Math.round(bb[1] - 9 + Math.sin(t * 4 + it.key) * 1.5);
-      rect(cx - 2, cy - 1, 5, 9, "#3b2a00");
-      rect(cx - 1, cy, 3, 5, "#ffd23f");
-      rect(cx - 1, cy + 6, 3, 2, "#ffd23f");
+      const bb = it.bb, k = (Math.sin(t * 3 + it.key * 2) + 1) / 2;
+      const cx = Math.round((bb[0] + bb[2]) / 2), cy = Math.round(bb[1] - 4);
+      const c = `rgba(255,${200 + Math.round(k * 55)},${120 + Math.round(k * 120)},${0.55 + k * 0.45})`;
+      rect(cx, cy - 2, 1, 5, c);
+      rect(cx - 2, cy, 5, 1, c);
+      if (k > 0.6) rect(cx, cy, 1, 1, "#fff");
     }
+    drawGlow(t);
     placeBubble();
     requestAnimationFrame(frame);
   }
@@ -702,11 +794,9 @@
   document.querySelectorAll(".toggle button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
 
   // ── Start ────────────────────────────────────────────────────
-  $("#hud-name").textContent = C.name;
-  $("#hud-role").textContent = `${C.role} · ${C.city}`;
   buildBoring();
   setMode(new URLSearchParams(location.search).get("mode") === "boring" ? "boring" : "whimsy");
   updateHud();
   requestAnimationFrame(frame);
-  setTimeout(() => say(C.intro, 6000), 500);
+  setTimeout(() => say(C.intro, 4000), 500);
 })();
