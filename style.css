@@ -15,12 +15,7 @@ html, body { margin: 0; min-height: 100%; }
 body {
   font-family: var(--font);
   color: var(--ink);
-  background-color: var(--desk);
-  background-image:
-    radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
-    radial-gradient(rgba(0,0,0,.08) 1px, transparent 1px);
-  background-size: 16px 16px;
-  background-position: 0 0, 8px 8px;
+  background: transparent;
 }
 body[data-mode="boring"] { background: #f7f6f3; }
 [hidden] { display: none !important; }
@@ -49,7 +44,7 @@ body[data-mode="boring"] .brand { color: var(--ink); text-shadow: none; }
 }
 
 /* ── game window ── */
-main { padding: 0 16px 32px; }
+main { padding: 16px; }
 .game-window { max-width: 980px; margin: 0 auto; padding: 3px; }
 .titlebar {
   display: flex; align-items: center; justify-content: space-between;
@@ -118,7 +113,7 @@ main { padding: 0 16px 32px; }
 .c3 { background: repeating-linear-gradient(90deg, #ffca28 0 6px, #f0b400 6px 8px); }
 .found { text-align: center; font-size: 12px; }
 .found strong { display: block; font: 800 22px var(--mono); color: var(--title1); }
-.hint { text-align: center; color: #e9fffb; font-size: 13px; margin: 12px 0 0; }
+.hint { text-align: center; color: #555; font-size: 13px; margin: 12px 0 0; }
 
 /* ── dialog ── */
 #dialog {

@@ -15,7 +15,7 @@ Walk around my pixel studio and click on objects to discover my projects, proces
 | 🌱 Plant | What I'm learning |
 | ☎️ Phone | Contact |
 
-There's also a **Boring** mode toggle (top right) that shows the same content as a plain, accessible page.
+A plain, accessible version (add `?mode=boring` to the URL) shows the same content as a plain, accessible page.
 
 ## Controls
 - **Click** an object (or the floor) to walk there
