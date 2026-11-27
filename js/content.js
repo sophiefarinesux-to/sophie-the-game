@@ -12,7 +12,7 @@ window.SOPHIE_CONTENT = {
   intro: "Hi! I'm Sophie 👋 Welcome to my studio. Click on things to get to know me.",
 
   // Shown when every object has been discovered
-  outro: "You've seen everything! Now you know me pretty well — let's talk? Pick up the phone ☎️",
+  outro: "You've seen everything! Now you know me pretty well 💛 Would you sign my guestbook before you go?",
 
   links: {
     github: "https://github.com/sophiefarinesux-to",
@@ -21,10 +21,79 @@ window.SOPHIE_CONTENT = {
     cv: "",       // TODO: link to a PDF of your CV
   },
 
+  // Where to send guestbook feedback.
+  // Easiest: create a free form at https://formspree.io and paste its URL here
+  // (looks like https://formspree.io/f/abcdwxyz). Entries then land in your inbox.
+  // If left empty, the guestbook falls back to opening an email to links.email.
+  feedback: {
+    formspree: "",
+  },
+
+  // Patapouf's fur (any CSS hex colours)
+  catColors: { fur: "#f0a04b", stripes: "#c8742a", belly: "#ffe3c2" },
+
+  // Pins on the map poster
+  placesIntro: "I've lived in 3 different countries. Each one changed the way I see things (and design them).",
+  places: [
+    { name: "France", country: "France", flag: "🇫🇷", lat: 46.6, lon: 2.4,
+      note: '<mark class="todo">When / what you did there</mark>' },
+    { name: "Tallinn", country: "Estonia", flag: "🇪🇪", lat: 59.44, lon: 24.75,
+      note: '<mark class="todo">When / what you did there</mark>' },
+    { name: "Toronto", country: "Canada", flag: "🇨🇦", lat: 43.65, lon: -79.38,
+      note: "Where I live now." },
+  ],
+
   // One entry per clickable object in the room (ids must match game.js)
   items: {
+    photo: {
+      label: "Photo of me",
+      title: "🖼️ That's me!",
+      body: `
+        <figure class="photo">
+          <img src="assets/me.jpg" alt="Photo of Sophie"
+               onerror="this.parentNode.innerHTML='<mark class=todo>Add a photo of you at assets/me.jpg</mark>'">
+          <figcaption>Hi, I'm Sophie, a UX designer in Toronto.</figcaption>
+        </figure>`,
+    },
+
+    map: {
+      label: "Map poster",
+      title: "🗺️ Home is in 3 places",
+      body: "__MAP__", // generated from `places` above
+    },
+
+    book: {
+      label: "Book",
+      title: "📖 My favourite writer: Bernard Werber",
+      body: `
+        <div class="book">
+          <div class="cover" aria-hidden="true"><span>B. Werber</span></div>
+          <div>
+            <h3><mark class="todo">Book title</mark></h3>
+            <p class="stars" aria-label="5 out of 5 stars">★★★★★</p>
+            <p><mark class="todo">Your short review: what it's about, why you love it, and what it taught you.</mark></p>
+          </div>
+        </div>`,
+    },
+
+    cat: {
+      label: "Patapouf 🐾",
+      title: "🐈 Meet Patapouf",
+      body: `
+        <p><strong>Patapouf</strong> is the studio's Chief Napping Officer and my most honest usability tester. If it isn't comfy, he walks away.</p>
+        <p><em>Purrrr…</em></p>
+        <p><mark class="todo">A real fact about Patapouf (age, favourite spot, funniest habit…)</mark></p>`,
+    },
+
+    guestbook: {
+      label: "Guestbook",
+      title: "✍️ Sign my guestbook",
+      intro: "Thanks for visiting! I'd love to know what you think of my portfolio. A few words are perfect.",
+      body: "__GUESTBOOK__",
+    },
+
     desk: {
-      label: "Computer",
+      label: "Laptop",
       title: "💾 My projects",
       body: `
         <p>Things I've designed and built:</p>

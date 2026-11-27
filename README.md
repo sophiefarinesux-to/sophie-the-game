@@ -7,12 +7,17 @@ Walk around my pixel studio and click on objects to discover my projects, proces
 
 | Object | What you'll find |
 | --- | --- |
-| 💾 Computer | Projects |
+| 🐈 Patapouf | My cat, wandering around the studio |
+| 🖼️ Photo | Me! (drop a photo at `assets/me.jpg`) |
+| 🗺️ Map poster | France, Tallinn, Toronto: the 3 countries I've lived in |
+| 💻 Laptop | Projects |
 | 📚 Bookshelf | Skills & tools |
+| 📖 Book | My favourite writer, Bernard Werber, plus a review |
 | 🖍️ Whiteboard | My design process |
 | 🛋️ Couch | My story |
 | ☕ Coffee machine | Fun facts (and a coffee refill) |
 | 🌱 Plant | What I'm learning |
+| ✍️ Guestbook | Visitors leave feedback on my portfolio |
 | ☎️ Phone | Contact |
 
 A plain, accessible version (add `?mode=boring` to the URL) shows the same content as a plain, accessible page.
@@ -23,6 +28,9 @@ A plain, accessible version (add `?mode=boring` to the URL) shows the same conte
 
 ## Editing the content
 All the text lives in [`js/content.js`](js/content.js). Placeholders are wrapped in `<mark class="todo">`, so search for `todo`.
+
+## Guestbook setup
+The guestbook can send entries straight to your inbox with [Formspree](https://formspree.io) (free plan). Create a form, copy its URL (`https://formspree.io/f/...`) and paste it into `feedback.formspree` in `js/content.js`. If you leave it empty, the guestbook opens an email to `links.email` instead.
 
 ## Running locally
 No build step. Open `index.html` in a browser, or run:

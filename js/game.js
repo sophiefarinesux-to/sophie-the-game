@@ -87,12 +87,6 @@
     quadX(0.04, 2.2, 2.48, 24, 31, "#58688f");
     quadX(0.06, 1.1, 2.5, 38.5, 39.5, "#ffffff");         // mullion
 
-    // colour-palette poster above the couch
-    quadX(0.01, 6.2, 8.2, 26, 54, "#fffdf6", "#c9c2ad");
-    ["#e85d75", "#ffca28", "#3ad1c4", "#7e57c2"].forEach((c, i) =>
-      quadX(0.02, 6.4 + i * 0.42, 6.75 + i * 0.42, 36, 50, c));
-    quadX(0.02, 6.4, 8.0, 30, 32, "#c9c2ad");
-
     // clock on the right wall
     quadY(0.01, 3.55, 3.95, 44, 54, "#ffffff", "#555");
     quadY(0.02, 3.73, 3.77, 49, 53, "#333");
@@ -114,12 +108,14 @@
         box(1.05, 0.85, 0.12, 0.12, 14, 0, "#7a5230");
         box(3.28, 0.85, 0.12, 0.12, 14, 0, "#7a5230");
         box(1, 0.05, 2.4, 0.95, 3, 14, "#b07a4a");
-        box(1.55, 0.12, 0.9, 0.6, 13, 17, "#d9d2c1");                 // beige CRT
-        quadY(0.721, 1.65, 2.35, 19.5, 28, "#22313a");
-        quadY(0.722, 1.7, 2.3, 20.5, 27, "#3ad1c4");
-        quadY(0.723, 1.76, 2.05, 25, 25.8, "#e6fffb");
-        quadY(0.723, 1.76, 2.2, 23, 23.8, "#e6fffb");
-        box(1.6, 0.76, 0.85, 0.16, 1.5, 17, "#ebe5d6");               // keyboard
+        box(1.6, 0.25, 0.95, 0.07, 15, 17.5, "#9aa1ab");              // laptop lid
+        quadY(0.321, 1.67, 2.48, 19.5, 31, "#22313a");
+        quadY(0.322, 1.71, 2.44, 20.5, 30, "#3ad1c4");
+        quadY(0.323, 1.78, 2.1, 26.5, 27.5, "#e6fffb");
+        quadY(0.323, 1.78, 2.3, 24, 25, "#e6fffb");
+        quadY(0.323, 1.78, 2.2, 21.5, 22.5, "#e6fffb");
+        box(1.6, 0.32, 0.95, 0.55, 1.5, 17, "#c3c8cf");               // laptop base
+        box(1.72, 0.4, 0.7, 0.3, 0.4, 18.5, "#8a9099");               // keys
         box(2.85, 0.4, 0.17, 0.17, 4, 17, "#e85d75");                 // mug
         box(2.75, 0.75, 0.22, 0.14, 1, 17, "#555c66");                // mouse
       },
@@ -197,6 +193,59 @@
         box(0.25, 9.32, 0.5, 0.13, 2.5, 18, "#b71c1c");
       },
     },
+    {
+      // framed photo of Sophie between the bookshelf and the map
+      id: "photo", x: 0, y: 4.7, w: 0.1, d: 0.95, h: 24, z: 30, stand: [1, 5], wall: true,
+      draw() {
+        quadX(0.02, 4.7, 5.65, 30, 54, "#8b5a3c");
+        quadX(0.03, 4.78, 5.57, 32, 52, "#ffe9c9");
+        quadX(0.04, 4.95, 5.4, 32, 37, "#e85d75");                     // shirt
+        quadX(0.04, 5.0, 5.35, 37, 48, "#5a321c");                     // hair
+        quadX(0.05, 5.07, 5.28, 38, 45, "#f0c19d");                    // face
+        quadX(0.06, 5.11, 5.14, 42, 43, "#222");
+        quadX(0.06, 5.2, 5.23, 42, 43, "#222");
+      },
+    },
+    {
+      // map poster: Toronto, France, Tallinn
+      id: "map", x: 0, y: 6.1, w: 0.1, d: 2.2, h: 30, z: 26, stand: [1, 8], wall: true,
+      draw() {
+        quadX(0.01, 6.1, 8.3, 26, 56, "#fffdf6", "#c9c2ad");
+        quadX(0.02, 6.2, 8.2, 28, 54, "#7ec8e3");
+        quadX(0.03, 6.25, 6.95, 32, 52, "#7cc576");                    // North America
+        quadX(0.03, 6.3, 6.75, 30, 33, "#7cc576");
+        quadX(0.03, 7.05, 7.3, 47, 53, "#e9f2f5");                     // Greenland
+        quadX(0.03, 7.45, 8.15, 34, 52, "#7cc576");                    // Europe
+        quadX(0.04, 7.6, 7.75, 36, 39, "#64ad5e");
+        // pins
+        [[6.75, 40], [7.6, 41], [7.95, 48]].forEach(([y, z]) => {
+          quadX(0.05, y - 0.05, y + 0.05, z, z + 4, "#e53935");
+          quadX(0.06, y - 0.02, y + 0.02, z + 2, z + 3, "#fff");
+        });
+      },
+    },
+    {
+      // coffee table on the rug with a Bernard Werber book
+      id: "book", x: 3.1, y: 5.1, w: 0.8, d: 0.8, h: 14, z: 0, stand: [4, 5],
+      draw() {
+        box(3.2, 5.2, 0.6, 0.6, 8, 0, "#7a5230");
+        box(3.1, 5.1, 0.8, 0.8, 2, 8, "#b07a4a");
+        box(3.27, 5.25, 0.45, 0.35, 2, 10, "#fffdf6");                  // pages
+        box(3.25, 5.23, 0.49, 0.39, 0.8, 10, "#2e5fa8");                // cover
+        box(3.25, 5.4, 0.49, 0.05, 2.4, 10, "#1f4580");                 // spine
+      },
+    },
+    {
+      // guestbook on a little stand
+      id: "guestbook", x: 9.15, y: 6.15, w: 0.7, d: 0.7, h: 22, z: 0, stand: [8, 6],
+      draw() {
+        box(9.3, 6.3, 0.4, 0.4, 14, 0, "#8b5a3c");
+        box(9.15, 6.15, 0.7, 0.7, 2, 14, "#6d4a2e");
+        box(9.22, 6.22, 0.56, 0.5, 1.5, 16, "#fffdf6");
+        box(9.22, 6.46, 0.56, 0.03, 1.8, 16, "#c9c2ad");
+        box(9.62, 6.3, 0.04, 0.04, 7, 17.5, "#ffffff");                 // quill
+      },
+    },
   ];
   const ITEM = Object.fromEntries(ITEMS.map((it) => [it.id, it]));
 
@@ -216,6 +265,81 @@
     const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
     it.bb = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
     it.key = it.x + it.w / 2 + it.y + it.d / 2;
+    it.cx = it.x + it.w / 2;
+    it.cy = it.y + it.d / 2;
+  }
+
+  // ── Patapouf the cat ─────────────────────────────────────────
+  const cat = {
+    id: "cat", x: 6, y: 5, path: [], face: 1, wait: 2, paused: false, sleepy: 0,
+    get cx() { return this.x + 0.5; },
+    get cy() { return this.y + 0.5; },
+    get bb() { return catBB(); },
+    get key() { return this.x + this.y + 1; },
+  };
+  const CAT = Object.assign({ fur: "#f0a04b", stripes: "#c8742a", belly: "#ffe3c2" }, C.catColors || {});
+
+  function updateCat(dt) {
+    if (cat.paused) return;
+    if (cat.path.length) {
+      const [tx, ty] = cat.path[0];
+      const dx = tx - cat.x, dy = ty - cat.y, dist = Math.hypot(dx, dy), s = 1.6 * dt;
+      if (dx - dy !== 0) cat.face = dx - dy > 0 ? 1 : -1;
+      if (dist <= s) { cat.x = tx; cat.y = ty; cat.path.shift(); if (!cat.path.length) cat.wait = 2 + Math.random() * 5; }
+      else { cat.x += (dx / dist) * s; cat.y += (dy / dist) * s; }
+      return;
+    }
+    cat.wait -= dt;
+    if (cat.wait > 0) return;
+    // pick a random free tile nearby that isn't Sophie's
+    for (let tries = 0; tries < 20; tries++) {
+      const tx = Math.round(cat.x) + Math.round((Math.random() - 0.5) * 8);
+      const ty = Math.round(cat.y) + Math.round((Math.random() - 0.5) * 8);
+      if (tx === Math.round(me.x) && ty === Math.round(me.y)) continue;
+      const p = findPath(Math.round(cat.x), Math.round(cat.y), tx, ty);
+      if (p && p.length) { cat.path = p; return; }
+    }
+    cat.wait = 1;
+  }
+
+  function catScreen() {
+    const [sx, sy] = iso(cat.x + 0.5, cat.y + 0.5);
+    return [Math.round(sx), Math.round(sy)];
+  }
+  function catBB() {
+    const [x, y] = catScreen();
+    return [x - 9, y - 15, x + 9, y + 1];
+  }
+
+  function drawCat(t) {
+    const [x, y] = catScreen();
+    const f = cat.face;
+    const px = (dx, dy, w, h, c) => rect(f > 0 ? x + dx : x - dx - w, y + dy, w, h, c);
+    ctx.fillStyle = "rgba(40,20,0,.2)";
+    ctx.beginPath(); ctx.ellipse(x, y, 6, 2.5, 0, 0, Math.PI * 2); ctx.fill();
+    const { fur, stripes, belly } = CAT;
+    if (cat.path.length) {
+      const s = Math.round(Math.sin(t * 16));
+      px(-5, -8, 9, 4, fur);                                // body
+      px(-3, -8, 1, 3, stripes); px(0, -8, 1, 3, stripes);
+      px(-4, -5, 7, 1, belly);
+      px(-4, -4, 1, 3 + s, fur); px(-2, -4, 1, 3 - s, fur); // legs
+      px(1, -4, 1, 3 - s, fur); px(3, -4, 1, 3 + s, fur);
+      px(3, -12, 4, 4, fur);                                // head
+      px(3, -13, 1, 1, fur); px(6, -13, 1, 1, fur);         // ears
+      px(5, -11, 1, 1, "#2f7d32"); px(7, -10, 1, 1, "#d9826b");
+      px(-7, -12, 1, 5, fur); px(-6, -8, 1, 1, fur);        // tail
+    } else {
+      const tail = Math.round(Math.sin(t * 3));
+      px(-3, -9, 6, 8, fur);                                // sitting body
+      px(-1, -8, 3, 5, belly);
+      px(-2, -9, 1, 3, stripes);
+      px(-1, -14, 5, 5, fur);                               // head
+      px(-1, -15, 1, 1, fur); px(3, -15, 1, 1, fur);
+      px(2, -12, 1, 1, "#2f7d32"); px(0, -12, 1, 1, "#2f7d32");
+      px(1, -11, 1, 1, "#d9826b");
+      px(-6, -2 + tail, 4, 1, fur);                         // tail swish
+    }
   }
 
   // ── Sophie ───────────────────────────────────────────────────
@@ -283,16 +407,34 @@
     me.target = null;
     if (!it) return;
     // turn toward the object
-    const dx = it.x + it.w / 2 - (me.x + 0.5), dy = it.y + it.d / 2 - (me.y + 0.5);
+    const dx = it.cx - (me.x + 0.5), dy = it.cy - (me.y + 0.5);
     me.dir = dx + dy > 0 ? 1 : -1;
     openItem(it.id);
+  }
+
+  // walk next to Patapouf (who politely waits)
+  function walkToCat() {
+    cat.paused = true;
+    cat.path = [];
+    cat.x = Math.round(cat.x); cat.y = Math.round(cat.y);
+    const sx = Math.round(me.x), sy = Math.round(me.y);
+    if (Math.abs(sx - cat.x) + Math.abs(sy - cat.y) === 1) { me.target = cat; return arrive(); }
+    let best = null;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const p = findPath(sx, sy, cat.x + dx, cat.y + dy);
+      if (p && (!best || p.length < best.length)) best = p;
+    }
+    if (!best) { cat.paused = false; return; }
+    me.path = best;
+    me.target = cat;
+    if (!best.length) arrive();
   }
 
   // ── Game state: meters & discoveries ─────────────────────────
   const found = new Set();
   let coffee = 70;
   const $ = (s) => document.querySelector(s);
-  const total = ITEMS.length;
+  const total = ITEMS.length + 1; // + Patapouf
 
   function updateHud() {
     $("#m-coffee").style.width = coffee + "%";
@@ -328,7 +470,79 @@
     const missing = !L.email || !L.linkedin ? `<p><mark class="todo">Add your email, LinkedIn and CV in js/content.js → links.</mark></p>` : "";
     return `<p>Ring ring! I'd love to hear from you.</p><div class="btn-row">${rows.join("")}</div>${missing}`;
   }
-  const bodyFor = (id) => (C.items[id].body === "__CONTACT__" ? contactHtml() : C.items[id].body);
+  // little SVG map of the North Atlantic with a pin per place
+  function mapHtml() {
+    const X = (lon) => ((lon + 95) / 130) * 400, Y = (lat) => ((68 - lat) / 38) * 200;
+    const shape = (pts, fill) => `<polygon fill="${fill}" points="${pts.map(([lo, la]) => X(lo).toFixed(1) + "," + Y(la).toFixed(1)).join(" ")}"/>`;
+    const land = "#7cc576";
+    const svg = `<svg class="map" viewBox="0 0 400 200" role="img" aria-label="Map with pins on ${C.places.map((p) => p.name).join(", ")}">
+      <rect width="400" height="200" fill="#7ec8e3"/>
+      ${shape([[-95, 30], [-81, 30], [-80, 32], [-75, 35], [-70, 41], [-66, 44], [-60, 46], [-53, 47], [-55, 52], [-60, 55], [-64, 60], [-75, 62], [-80, 63], [-95, 64]], land)}
+      ${shape([[-58, 68], [-50, 62], [-44, 60], [-38, 65], [-30, 68]], "#e9f2f5")}
+      ${shape([[-24, 64], [-14, 64], [-14, 66], [-22, 66.5]], land)}
+      ${shape([[-10, 36], [-9, 43], [-2, 44], [-5, 48], [-2, 49], [2, 51], [5, 53], [8, 54], [10, 57], [5, 58], [5, 62], [10, 64], [15, 68], [35, 68], [35, 40], [28, 41], [20, 40], [15, 38], [12, 44], [8, 44], [3, 43], [-1, 37]], land)}
+      ${shape([[-6, 50], [1, 51], [2, 53], [-3, 56], [-5, 58], [-6, 55]], land)}
+      ${C.places.map((p) => `<g transform="translate(${X(p.lon).toFixed(1)},${Y(p.lat).toFixed(1)})">
+          <path d="M0 0 C-7 -9 -7 -16 0 -16 C7 -16 7 -9 0 0Z" fill="#e53935" stroke="#fff" stroke-width="1.5"/>
+          <circle cy="-11" r="2.5" fill="#fff"/>
+          <text y="12" text-anchor="middle" class="pin-label">${p.name}</text></g>`).join("")}
+    </svg>`;
+    const list = C.places.map((p) => `<li><strong>${p.flag} ${p.name}</strong>, ${p.country}<br><span>${p.note}</span></li>`).join("");
+    return `<p>${C.placesIntro}</p>${svg}<ul class="places">${list}</ul>`;
+  }
+
+  function guestbookHtml() {
+    return `<p>${C.items.guestbook.intro}</p>
+      <form class="gb" novalidate>
+        <fieldset class="moods"><legend>First impression</legend>
+          ${["😍 Love it", "🙂 Nice", "🤔 Interesting", "💡 I have ideas"].map((m, i) =>
+            `<label><input type="radio" name="mood" value="${m}"${i === 0 ? "" : ""}><span>${m}</span></label>`).join("")}
+        </fieldset>
+        <label class="field">Your feedback
+          <textarea name="message" rows="4" maxlength="1500" placeholder="A few words about my portfolio…" required></textarea></label>
+        <label class="field">Your name <small>(optional)</small>
+          <input name="name" maxlength="80" autocomplete="name"></label>
+        <div class="gb-foot"><button class="btn" type="submit">✍️ Sign the guestbook</button><span class="gb-status" role="status"></span></div>
+      </form>`;
+  }
+
+  async function sendFeedback(form) {
+    const status = form.querySelector(".gb-status");
+    const fd = new FormData(form);
+    const message = String(fd.get("message") || "").trim();
+    const name = String(fd.get("name") || "").trim() || "Anonymous";
+    const mood = String(fd.get("mood") || "");
+    if (!message) { status.textContent = "Write a few words first 🙂"; form.message.focus(); return; }
+    const F = C.feedback || {};
+    if (F.formspree) {
+      status.textContent = "Sending…";
+      try {
+        const r = await fetch(F.formspree, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ name, mood, message, _subject: "New guestbook entry on Sophie's Studio" }),
+        });
+        if (!r.ok) throw new Error(r.status);
+        form.reset();
+        status.textContent = "Thank you! Sophie will read it 💌";
+      } catch {
+        status.textContent = "Oops, that didn't send. Please try again.";
+      }
+    } else if (C.links.email) {
+      const body = `${mood ? mood + "\n\n" : ""}${message}\n\n— ${name}`;
+      location.href = `mailto:${C.links.email}?subject=${encodeURIComponent("Feedback on your portfolio")}&body=${encodeURIComponent(body)}`;
+      status.textContent = "Opening your email app…";
+    } else {
+      status.innerHTML = '<mark class="todo">Guestbook not connected yet: add a Formspree URL or your email in content.js.</mark>';
+    }
+  }
+  function bindForms(root) {
+    root.querySelectorAll("form.gb").forEach((f) =>
+      f.addEventListener("submit", (e) => { e.preventDefault(); sendFeedback(f); }));
+  }
+
+  const special = { __CONTACT__: contactHtml, __MAP__: mapHtml, __GUESTBOOK__: guestbookHtml };
+  const bodyFor = (id) => (special[C.items[id].body] ? special[C.items[id].body]() : C.items[id].body);
 
   let lastFocus = null;
   function openItem(id) {
@@ -340,6 +554,7 @@
     lastFocus = document.activeElement;
     $("#dlg-title").textContent = data.title;
     $("#dlg-body").innerHTML = bodyFor(id);
+    bindForms($("#dlg-body"));
     $("#bubble").hidden = true;
     $("#tooltip").hidden = true;
     $("#dialog").hidden = false;
@@ -348,6 +563,7 @@
   }
   function closeDialog() {
     $("#dialog").hidden = true;
+    if (cat.paused) { cat.paused = false; cat.wait = 3; }
     if (lastFocus) lastFocus.focus();
   }
   $("#dlg-close").addEventListener("click", closeDialog);
@@ -361,8 +577,9 @@
     return [((e.clientX - r.left) * W) / r.width, ((e.clientY - r.top) * H) / r.height];
   }
   function itemAt(px, py) {
-    const hits = ITEMS.filter((it) => px >= it.bb[0] && px <= it.bb[2] && py >= it.bb[1] && py <= it.bb[3]);
-    hits.sort((a, b) => b.key - a.key);
+    const area = (b) => (b[2] - b[0]) * (b[3] - b[1]);
+    const hits = [cat, ...ITEMS].filter((it) => { const b = it.bb; return px >= b[0] && px <= b[2] && py >= b[1] && py <= b[3]; });
+    hits.sort((a, b) => area(a.bb) - area(b.bb)); // smallest (most specific) wins
     return hits[0] || null;
   }
   canvas.addEventListener("mousemove", (e) => {
@@ -386,6 +603,7 @@
   canvas.addEventListener("click", (e) => {
     const [px, py] = canvasPoint(e);
     const it = itemAt(px, py);
+    if (it === cat) return walkToCat();
     if (it) return walkTo(it.stand[0], it.stand[1], it);
     const [gx, gy] = toGrid(px, py);
     walkTo(Math.floor(gx), Math.floor(gy));
@@ -400,8 +618,11 @@
       const [dx, dy] = dirs[e.key];
       walkTo(Math.round(me.x) + dx, Math.round(me.y) + dy);
     } else if (e.key === "Enter" || e.key === " ") {
-      const it = ITEMS.find((i) => i.stand[0] === Math.round(me.x) && i.stand[1] === Math.round(me.y));
-      if (it && !e.target.closest("button, a")) { e.preventDefault(); me.target = it; arrive(); }
+      if (e.target.closest("button, a, input, textarea")) return;
+      const mx = Math.round(me.x), my = Math.round(me.y);
+      if (Math.abs(mx - Math.round(cat.x)) + Math.abs(my - Math.round(cat.y)) <= 1) { e.preventDefault(); return walkToCat(); }
+      const it = ITEMS.find((i) => i.stand[0] === mx && i.stand[1] === my);
+      if (it) { e.preventDefault(); me.target = it; arrive(); }
     }
   });
 
@@ -426,6 +647,8 @@
       } else { me.x += (dx / dist) * stepLen; me.y += (dy / dist) * stepLen; }
     }
 
+    updateCat(dt);
+
     // coffee slowly runs out
     coffee = Math.max(0, coffee - dt * 0.8);
     if (coffee < 15 && !coffeeWarned) { coffeeWarned = true; say("Running low on coffee… ☕ (hint: the coffee machine!)"); }
@@ -435,19 +658,21 @@
     // draw
     ctx.clearRect(0, 0, W, H);
     drawRoom();
-    const drawables = [...ITEMS.map((it) => ({ key: it.key, it })), { key: me.x + me.y + 1, me: true }];
+    const drawables = [...ITEMS.map((it) => ({ key: it.key, it })), { key: me.x + me.y + 1, me: true }, { key: cat.key, cat: true }];
     drawables.sort((a, b) => a.key - b.key);
     for (const d of drawables) {
       if (d.me) { drawSophie(t); continue; }
+      if (d.cat) { drawCat(t); continue; }
       const glow = hover === d.it;
       if (glow) ctx.filter = "brightness(1.15) saturate(1.2)";
       d.it.draw();
       ctx.filter = "none";
     }
     // "!" markers above undiscovered objects
-    for (const it of ITEMS) {
+    for (const it of [...ITEMS, cat]) {
       if (found.has(it.id)) continue;
-      const cx = Math.round((it.bb[0] + it.bb[2]) / 2), cy = Math.round(it.bb[1] - 9 + Math.sin(t * 4 + it.key) * 1.5);
+      const bb = it.bb;
+      const cx = Math.round((bb[0] + bb[2]) / 2), cy = Math.round(bb[1] - 9 + Math.sin(t * 4 + it.key) * 1.5);
       rect(cx - 2, cy - 1, 5, 9, "#3b2a00");
       rect(cx - 1, cy, 3, 5, "#ffd23f");
       rect(cx - 1, cy + 6, 3, 2, "#ffd23f");
@@ -458,10 +683,11 @@
 
   // ── Boring mode (plain, accessible version of the same content) ──
   function buildBoring() {
-    const order = ["couch", "desk", "whiteboard", "shelf", "plant", "coffee", "phone"];
+    const order = ["photo", "couch", "map", "desk", "whiteboard", "shelf", "book", "plant", "cat", "coffee", "guestbook", "phone"];
     $("#boring-content").innerHTML = order
       .map((id) => `<section class="b-sec"><h2>${C.items[id].title}</h2>${bodyFor(id)}</section>`)
       .join("");
+    bindForms($("#boring-content"));
   }
   function setMode(mode) {
     document.body.dataset.mode = mode;
