@@ -695,7 +695,8 @@
     $("#boring").hidden = mode !== "boring";
     document.querySelectorAll(".toggle button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.mode === mode));
     const url = new URL(location.href);
-    url.searchParams.set("mode", mode);
+    if (mode === "boring") url.searchParams.set("mode", mode);
+    else url.searchParams.delete("mode");
     history.replaceState(null, "", url);
   }
   document.querySelectorAll(".toggle button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
