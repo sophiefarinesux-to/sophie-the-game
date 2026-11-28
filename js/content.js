@@ -8,8 +8,8 @@ window.SOPHIE_CONTENT = {
   role: "UX Designer",
   city: "Toronto",
 
-  intro: "Hi! I'm Sophie 👋",
-  outro: "Sign my guestbook? ✍️",
+  intro: "Hi! I'm Sophie",
+  outro: "Sign my guestbook?",
 
   links: {
     github: "https://github.com/sophiefarinesux-to",
@@ -65,7 +65,7 @@ window.SOPHIE_CONTENT = {
     cat: {
       label: "Patapouf",
       title: "Patapouf",
-      body: `<p class="big">🐈</p><p class="lead">Patapouf</p><p class="muted">Chief napping officer.</p>`,
+      body: `<p class="lead">Patapouf</p><p class="muted">Chief napping officer.</p>`,
     },
 
     guestbook: {
@@ -110,13 +110,13 @@ window.SOPHIE_CONTENT = {
     coffee: {
       label: "Coffee",
       title: "Fun fact",
-      body: `<p class="big">☕</p><p class="lead"><mark class="todo">A fun fact</mark></p>`,
+      body: `<p class="lead"><mark class="todo">A fun fact</mark></p>`,
     },
 
     plant: {
       label: "Learning",
       title: "Currently learning",
-      body: `<p class="big">🌱</p><p class="lead"><mark class="todo">What you're learning</mark></p>`,
+      body: `<p class="lead"><mark class="todo">What you're learning</mark></p>`,
     },
 
     phone: { label: "Contact", title: "Contact", body: "__CONTACT__" },

@@ -564,10 +564,10 @@
 
   function contactHtml() {
     const L = C.links, rows = [];
-    if (L.email) rows.push(`<a class="btn" href="mailto:${L.email}">✉️ ${L.email}</a>`);
-    if (L.linkedin) rows.push(`<a class="btn" href="${L.linkedin}" target="_blank" rel="noopener">💼 LinkedIn</a>`);
-    if (L.cv) rows.push(`<a class="btn" href="${L.cv}" target="_blank" rel="noopener">📄 My CV</a>`);
-    rows.push(`<a class="btn" href="${L.github}" target="_blank" rel="noopener">🐙 GitHub</a>`);
+    if (L.email) rows.push(`<a class="btn" href="mailto:${L.email}">${L.email}</a>`);
+    if (L.linkedin) rows.push(`<a class="btn" href="${L.linkedin}" target="_blank" rel="noopener">LinkedIn</a>`);
+    if (L.cv) rows.push(`<a class="btn" href="${L.cv}" target="_blank" rel="noopener">CV</a>`);
+    rows.push(`<a class="btn" href="${L.github}" target="_blank" rel="noopener">GitHub</a>`);
     const missing = !L.email || !L.linkedin ? `<p><mark class="todo">email + LinkedIn</mark></p>` : "";
     return `<div class="btn-row">${rows.join("")}</div>${missing}`;
   }
@@ -594,10 +594,6 @@
   function guestbookHtml() {
     return `<p class="lead">${C.items.guestbook.intro}</p>
       <form class="gb" novalidate>
-        <fieldset class="moods"><legend class="sr">First impression</legend>
-          ${["😍", "🙂", "🤔", "💡"].map((m) =>
-            `<label><input type="radio" name="mood" value="${m}"><span>${m}</span></label>`).join("")}
-        </fieldset>
         <textarea name="message" rows="3" maxlength="1500" aria-label="Your feedback" placeholder="A few words…" required></textarea>
         <input name="name" maxlength="80" autocomplete="name" aria-label="Your name (optional)" placeholder="Name (optional)">
         <div class="gb-foot"><button class="btn" type="submit">Send</button><span class="gb-status" role="status"></span></div>
@@ -610,7 +606,7 @@
     const message = String(fd.get("message") || "").trim();
     const name = String(fd.get("name") || "").trim() || "Anonymous";
     const mood = String(fd.get("mood") || "");
-    if (!message) { status.textContent = "A few words first 🙂"; form.message.focus(); return; }
+    if (!message) { status.textContent = "A few words first"; form.message.focus(); return; }
     const F = C.feedback || {};
     if (F.formspree) {
       status.textContent = "Sending…";
@@ -622,7 +618,7 @@
         });
         if (!r.ok) throw new Error(r.status);
         form.reset();
-        status.textContent = "Thank you 💌";
+        status.textContent = "Thank you!";
       } catch {
         status.textContent = "Oops, that didn't send. Please try again.";
       }
