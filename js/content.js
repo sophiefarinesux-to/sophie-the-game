@@ -13,7 +13,7 @@ window.SOPHIE_CONTENT = {
 
   links: {
     github: "https://github.com/sophiefarinesux-to",
-    linkedin: "", // TODO: https://www.linkedin.com/in/your-handle
+    linkedin: "https://www.linkedin.com/in/sophiefarines",
     email: "",    // TODO: hello@yourdomain.com
     cv: "",       // TODO: link to your CV (PDF)
   },
@@ -43,6 +43,12 @@ window.SOPHIE_CONTENT = {
                onerror="this.parentNode.innerHTML='<mark class=todo>assets/me.jpg</mark>'">
         </figure>
         <p class="lead">Hi, I'm Sophie. UX designer in Toronto.</p>`,
+    },
+
+    toronto: {
+      label: "Toronto",
+      title: "Toronto",
+      body: `<p class="lead">I live in Toronto.</p>`,
     },
 
     map: { label: "Map", title: "Where I've lived", body: "__MAP__" },

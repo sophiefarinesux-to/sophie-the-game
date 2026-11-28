@@ -168,6 +168,21 @@
     glow(1.95, 7.2, 12, 22, 0.32 + Math.sin(t * 9) * 0.05);
   }
 
+  // ── Sophie's real photo (assets/me.jpg), shrunk into chunky pixels ──
+  const PHOTO = { ready: false, px: document.createElement("canvas") };
+  {
+    const img = new Image();
+    img.onload = () => {
+      const px = PHOTO.px, g = px.getContext("2d");
+      px.width = 11; px.height = 14;                       // pixel-art resolution
+      const sw = img.width * 0.8, sh = sw * (14 / 11);      // portrait crop, centred
+      g.imageSmoothingQuality = "high";
+      g.drawImage(img, (img.width - sw) / 2, Math.max(0, (img.height - sh) / 2 - img.height * 0.04), sw, Math.min(sh, img.height), 0, 0, 11, 14);
+      PHOTO.ready = true;
+    };
+    img.src = "assets/me.jpg";
+  }
+
   // ── Furniture ────────────────────────────────────────────────
   // x,y,w,d = footprint on the grid; h,z = height/elevation of the hit box
   // stand = tile Sophie walks to; wall = sits on a wall, doesn't block the floor
@@ -272,12 +287,28 @@
       draw() {
         quadX(0.02, 4.7, 5.65, 37, 57, "#8b5a3c");
         quadX(0.03, 4.78, 5.57, 39, 55, "#ffe9c9");
+        if (PHOTO.ready) {
+          const [ox, oy] = iso(0.03, 5.57, 55);
+          const iw = PHOTO.px.width, ih = PHOTO.px.height;
+          ctx.save();
+          ctx.imageSmoothingEnabled = false;
+          // map the picture onto the left wall: x runs along the wall, y runs down
+          ctx.setTransform((0.79 * 16) / iw, (-0.79 * 8) / iw, 0, 16 / ih, ox, oy);
+          ctx.drawImage(PHOTO.px, 0, 0);
+          ctx.restore();
+          return;
+        }
         quadX(0.04, 4.95, 5.4, 39, 43, "#e85d75");
         quadX(0.04, 5.0, 5.35, 43, 52, "#5a321c");
         quadX(0.05, 5.07, 5.28, 44, 50, "#f0c19d");
         quadX(0.06, 5.11, 5.14, 47, 48, "#222");
         quadX(0.06, 5.2, 5.23, 47, 48, "#222");
       },
+    },
+    {
+      // the CN Tower window (drawn with the room; this makes it clickable)
+      id: "toronto", x: 0.8, y: 0, w: 1.9, d: 0.1, h: 31, z: 31, stand: [2, 1], wall: true,
+      draw() {},
     },
     {
       // map poster: Toronto, France, Tallinn
@@ -771,7 +802,7 @@
 
   // ── Boring mode (plain, accessible version of the same content) ──
   function buildBoring() {
-    const order = ["photo", "couch", "map", "desk", "whiteboard", "shelf", "book", "plant", "cat", "coffee", "guestbook", "phone"];
+    const order = ["photo", "toronto", "couch", "map", "desk", "whiteboard", "shelf", "book", "plant", "cat", "coffee", "guestbook", "phone"];
     $("#boring-content").innerHTML = order
       .map((id) => `<section class="b-sec"><h2>${C.items[id].title}</h2>${bodyFor(id)}</section>`)
       .join("");
